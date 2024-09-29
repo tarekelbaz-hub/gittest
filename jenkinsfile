@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git Clone') {
+            steps {
+                git (url: 'https://github.com/tarekelbaz-hub/gittest.git', branch: 'main')
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'javac HelloWorld.java'
+            }
+        }
+        stage('Docker Image Build') {
+            steps {
+                sh 'docker build -t hello-app:1.0 .'
+                sh 'docker image list'
+            }
+        }
+        stage('Docker Login') {
+            steps {
+                withCredentials([string(credentialsId: 'DOCKER_HUB_PASSWORD', variable: 'PASSWORD')]) {
+                    sh 'docker login -u tarekelbaz -p $PASSWORD'
+                }
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                sh 'docker tag hello-app:1.0 tarekelbaz/hello-app:1.0'
+                sh 'docker push tarekelbaz/hello-app:1.0'
+            }
+        }
+    }
+}
