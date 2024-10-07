@@ -1,0 +1,13 @@
+---
+# Playbook to install Tomcat and elinks
+- hosts: workers
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Install Tomcat and elinks
+      apt:
+        name:
+          - tomcat9
+          - elinks
+        state: latest
+        update_cache: yes
