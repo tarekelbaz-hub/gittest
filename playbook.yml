@@ -1,0 +1,40 @@
+---
+- name: hello orange
+  hosts: kubernetes_master_nodes
+  become: true
+  tasks:
+
+    - name: Update the apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+
+    - name: Enable Apache to start on boot
+      systemd:
+        name: apache2
+        enabled: true
+
+    - name: Start Apache service
+      systemd:
+        name: apache2
+        state: started
+
+    - name: Copy custom index.html to web server
+      template:
+        src: templates/index.html
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+      notify:
+        - Restart Apache
+
+  handlers:
+    - name: Restart Apache
+      systemd:
+        name: apache2
+        state: restarted
