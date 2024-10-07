@@ -1,0 +1,7 @@
+---
+- hosts: workers
+
+  tasks:
+    - name: copy-file
+      copy: src=/etc/hosts dest=/home/devops-user/host-sysops
+...
