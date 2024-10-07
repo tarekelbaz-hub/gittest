@@ -1,0 +1,13 @@
+---
+- name: Create a file with specific permissions and ownership
+  hosts: workers
+  become: yes  # Ensure privilege escalation if necessary
+  become_method: sudo
+  tasks:
+    - name: Create a file with permissions 755 and owner:group devops-user
+      file:
+        path: /home/devops-user/Hello.txt  # Specify the path to the file
+        state: touch                 # Create an empty file if it doesn't exist
+        owner: devops-user           # Set the file owner
+        group: devops-user           # Set the file group
+        mode: '0755'                 # Set file permissions
